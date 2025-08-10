@@ -1,0 +1,1 @@
+tips: on mac os, it's not easy to use multipass to create vms for k8s cluster because of the network issue.

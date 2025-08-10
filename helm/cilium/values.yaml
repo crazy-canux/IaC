@@ -1,0 +1,110 @@
+# Cilium Helm Values for Kind Clusters
+# Optimized configuration for local development with Kind
+
+# Image configuration
+image:
+  repository: "quay.io/cilium/cilium"
+  tag: "v1.17.1"
+  pullPolicy: "IfNotPresent"
+
+# Operator configuration
+operator:
+  image:
+    repository: "quay.io/cilium/operator"
+    tag: "v1.17.1"
+    pullPolicy: "IfNotPresent"
+  replicas: 1  # Single replica for Kind clusters
+
+# IPAM (IP Address Management)
+ipam:
+  mode: kubernetes  # Use Kubernetes native IPAM
+
+# Networking configuration
+cluster:
+  name: "kind-cluster"
+
+# Kube-proxy replacement
+kubeProxyReplacement: true
+
+# Enable IPv4 and disable IPv6 for simplicity
+ipv4:
+  enabled: true
+ipv6:
+  enabled: false
+
+# BGP configuration (disabled for Kind)
+bgp:
+  enabled: false
+
+# Routing mode
+routingMode: "native"
+autoDirectNodeRoutes: true
+
+# Tunnel configuration - removed deprecated option
+# tunnel: "disabled"  # Deprecated in v1.15 - use routingMode instead
+
+# Security and policies
+policyEnforcementMode: "default"
+policyAuditMode: false
+
+# Hubble (observability)
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+    image:
+      repository: "quay.io/cilium/hubble-relay"
+      tag: "v1.17.1"
+  ui:
+    enabled: true
+    image:
+      repository: "quay.io/cilium/hubble-ui"
+      tag: "v0.13.1"
+    service:
+      type: NodePort
+      nodePort: 31234
+
+# Debug and development settings
+debug:
+  enabled: false
+
+# Resource requirements (optimized for Kind)
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Node selector and tolerations
+nodeSelector: {}
+tolerations:
+  - operator: Exists
+
+# Prometheus monitoring
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: false  # Disable unless you have Prometheus operator
+
+# Health checking
+healthChecking: true
+
+# Load balancing
+loadBalancer:
+  algorithm: "random"
+  mode: "snat"
+
+# Container runtime - removed deprecated option
+# containerRuntime:
+#   integration: "containerd"  # Deprecated in v1.16
+
+# Kubernetes service configuration
+k8sServiceHost: "kind-control-plane"
+k8sServicePort: 6443
+
+# Enable API rate limiting
+k8sClientRateLimit:
+  qps: 10
+  burst: 20
