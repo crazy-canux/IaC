@@ -15,11 +15,11 @@ resource "time_sleep" "wait_for_cluster" {
 # Determine values file based on environment
 locals {
   values_file = var.environment == "production" ? "../../helm/cilium/values-production.yaml" : var.values_file_path
-  
+
   # Get cluster info from Kind module state
-  cluster_name = try(data.terraform_remote_state.kind.outputs.cluster_name, var.cluster_name)
+  cluster_name    = try(data.terraform_remote_state.kind.outputs.cluster_name, var.cluster_name)
   kubeconfig_path = try(data.terraform_remote_state.kind.outputs.kubeconfig_path, var.kubeconfig_path)
-  
+
   # Dynamic values based on Kind cluster
   dynamic_values = {
     "cluster.name"         = local.cluster_name
@@ -28,9 +28,9 @@ locals {
     "kubeProxyReplacement" = var.kube_proxy_replacement
     "hubble.ui.enabled"    = var.enable_hubble_ui
     "image.pullPolicy"     = "IfNotPresent"
-    "ipam.mode"           = "kubernetes"
+    "ipam.mode"            = "kubernetes"
   }
-  
+
   # Merge with additional values
   merged_values = merge(local.dynamic_values, var.additional_values)
 }
