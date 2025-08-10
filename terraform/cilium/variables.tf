@@ -1,5 +1,5 @@
 variable "kubeconfig_path" {
-  description = "Path to the kubeconfig file from Kind cluster (auto-detected if not provided)"
+  description = "Path to the kubeconfig file (defaults to ~/.kube/config which Kind updates automatically)"
   type        = string
   default     = ""
 }

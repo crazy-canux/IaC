@@ -60,3 +60,10 @@ resource "time_sleep" "wait_for_cluster" {
   depends_on      = [kind_cluster.main]
   create_duration = "30s"
 }
+
+# Write kubeconfig to file
+resource "local_file" "kubeconfig" {
+  depends_on = [time_sleep.wait_for_cluster]
+  content    = kind_cluster.main.kubeconfig
+  filename   = "${path.module}/${var.cluster_name}-config"
+}

@@ -17,8 +17,10 @@ locals {
   values_file = var.environment == "production" ? "../../helm/cilium/values-production.yaml" : var.values_file_path
 
   # Get cluster info from Kind module state
-  cluster_name    = try(data.terraform_remote_state.kind.outputs.cluster_name, var.cluster_name)
-  kubeconfig_path = try(data.terraform_remote_state.kind.outputs.kubeconfig_path, var.kubeconfig_path)
+  cluster_name = try(data.terraform_remote_state.kind.outputs.cluster_name, var.cluster_name)
+  
+  # Use default kubeconfig location since Kind updates ~/.kube/config
+  kubeconfig_path = var.kubeconfig_path != "" ? var.kubeconfig_path : "~/.kube/config"
 
   # Dynamic values based on Kind cluster
   dynamic_values = {
@@ -63,7 +65,7 @@ resource "helm_release" "cilium" {
   # Cleanup on fail and wait for deployment
   cleanup_on_fail = true
   wait            = var.wait_for_deployment
-  timeout         = 600
+  timeout         = 300  # Reduced from 600 to 5 minutes
   recreate_pods   = true
 }
 
@@ -71,6 +73,6 @@ resource "helm_release" "cilium" {
 resource "time_sleep" "wait_for_cilium" {
   count = var.wait_for_deployment ? 1 : 0
 
-  create_duration = "60s"
+  create_duration = "30s"  # Reduced from 60s
   depends_on      = [helm_release.cilium]
 }
