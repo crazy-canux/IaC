@@ -10,7 +10,7 @@ data "terraform_remote_state" "kind" {
 # Wait for cluster to be ready before installing Cilium
 resource "time_sleep" "wait_for_cluster" {
   create_duration = "30s"
-  
+
   # Ensure we wait for the Kind cluster to be completely ready
   depends_on = [data.terraform_remote_state.kind]
 }
@@ -19,7 +19,7 @@ resource "time_sleep" "wait_for_cluster" {
 locals {
   # Get cluster info directly from Kind module outputs
   cluster_name = data.terraform_remote_state.kind.outputs.cluster_name
-  
+
   # Dynamic values based on Kind cluster outputs
   dynamic_values = {
     "cluster.name"         = local.cluster_name
@@ -71,6 +71,6 @@ resource "helm_release" "cilium" {
 resource "time_sleep" "wait_for_cilium" {
   count = var.wait_for_deployment ? 1 : 0
 
-  create_duration = "30s"  # Reduced from 60s
+  create_duration = "30s" # Reduced from 60s
   depends_on      = [helm_release.cilium]
 }

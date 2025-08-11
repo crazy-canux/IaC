@@ -19,13 +19,13 @@ terraform {
 # Configure Helm provider - uses kubeconfig from Kind cluster
 provider "helm" {
   kubernetes {
-    config_path = var.kubeconfig_path
+    config_path = "../kind/iac-lab-config"
   }
 }
 
 # Configure Kubernetes provider - uses kubeconfig from Kind cluster  
 provider "kubernetes" {
-  config_path = var.kubeconfig_path
+  config_path = "../kind/iac-lab-config"
 }
 
 # Configure Time provider

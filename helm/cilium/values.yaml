@@ -1,148 +1,45 @@
-# Cilium Helm Values for Production Environment
-# Optimized configuration with HA and production-grade settings
+# Cilium v1.17 - Minimal Production Configuration
 
-# Image configuration
-image:
-  repository: "quay.io/cilium/cilium"
-  tag: "v1.17.1"
-  pullPolicy: "IfNotPresent"
+# Cluster configuration
+cluster:
+  name: "iac-lab"
+  id: 1
 
-# Operator configuration - HA setup
-operator:
-  image:
-    repository: "quay.io/cilium/operator"
-    tag: "v1.17.1"
-    pullPolicy: "IfNotPresent"
-  replicas: 2  # HA for production
+# Kube-proxy replacement
+kubeProxyReplacement: true
 
-# IPAM configuration
+# Routing - native mode without tunneling
+routingMode: "native"
+autoDirectNodeRoutes: true
+
+# IPAM
 ipam:
   mode: kubernetes
 
-# Cluster configuration - will be overridden by Terraform with Kind cluster name
-cluster:
-  name: "iac-lab"  # Default, will use actual Kind cluster name
-  id: 1
-
-# Kube-proxy replacement for better performance
-kubeProxyReplacement: true
-
-# IPv4/IPv6 configuration
-ipv4:
-  enabled: true
-ipv6:
-  enabled: false
-
-# BGP configuration (can be enabled for production)
-bgp:
-  enabled: false
-
-# Routing configuration
-routingMode: "native"
-autoDirectNodeRoutes: true
-tunnel: "disabled"
-
-# Security and policy enforcement - Production grade
-policyEnforcementMode: "always"
-policyAuditMode: true
-
-# Hubble observability - full production setup
+# Basic Hubble setup
 hubble:
   enabled: true
-  metrics:
-    enabled:
-      - dns
-      - drop
-      - tcp
-      - flow
-      - icmp
-      - http
   relay:
     enabled: true
-    image:
-      repository: "quay.io/cilium/hubble-relay"
-      tag: "v1.17.1"
-    replicas: 2  # HA
-    resources:
-      limits:
-        cpu: 500m
-        memory: 512Mi
-      requests:
-        cpu: 100m
-        memory: 64Mi
   ui:
     enabled: true
-    image:
-      repository: "quay.io/cilium/hubble-ui"
-      tag: "v0.13.1"
-    replicas: 2  # HA
-    service:
-      type: ClusterIP  # Use ingress for production
 
-# Debug disabled for production
-debug:
+# Disable Prometheus ServiceMonitor (requires Prometheus Operator)
+prometheus:
   enabled: false
 
-# Production resource requirements
+# Basic resources
 resources:
   limits:
-    cpu: 2000m
-    memory: 2Gi
+    cpu: 1000m
+    memory: 1Gi
   requests:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 128Mi
 
-# Node affinity and tolerations
-nodeSelector: {}
-tolerations:
-  - operator: Exists
+# Security
+policyEnforcementMode: "default"
 
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchLabels:
-              k8s-app: cilium
-          topologyKey: kubernetes.io/hostname
-
-# Monitoring and observability
-prometheus:
-  enabled: true
-  serviceMonitor:
-    enabled: true
-    labels:
-      app: cilium
-
-# Health and liveness probes
-healthChecking: true
-livenessProbe:
-  failureThreshold: 10
-  periodSeconds: 30
-  successThreshold: 1
-  timeoutSeconds: 5
-readinessProbe:
-  failureThreshold: 3
-  periodSeconds: 30
-  successThreshold: 1
-  timeoutSeconds: 5
-
-# Load balancing
-loadBalancer:
-  algorithm: "random"
-  mode: "snat"
-
-# Container runtime
-containerRuntime:
-  integration: "containerd"
-
-# High API rate limits for production
-k8sClientRateLimit:
-  qps: 50
-  burst: 100
-
-# Encryption enabled for production security
+# Disable encryption for now (can cause issues in Kind)
 encryption:
-  enabled: true
-  type: "wireguard"
+  enabled: false
