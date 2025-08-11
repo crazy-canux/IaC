@@ -22,13 +22,14 @@ locals {
 
   # Dynamic values based on Kind cluster outputs
   dynamic_values = {
-    "cluster.name"         = local.cluster_name
-    "k8sServiceHost"       = data.terraform_remote_state.kind.outputs.api_server_host
-    "k8sServicePort"       = data.terraform_remote_state.kind.outputs.api_server_port
-    "kubeProxyReplacement" = var.kube_proxy_replacement
-    "hubble.ui.enabled"    = var.enable_hubble_ui
-    "image.pullPolicy"     = "IfNotPresent"
-    "ipam.mode"            = "kubernetes"
+    "cluster.name"                    = local.cluster_name
+    "k8sServiceHost"                  = data.terraform_remote_state.kind.outputs.api_server_host
+    "k8sServicePort"                  = data.terraform_remote_state.kind.outputs.api_server_port
+    "kubeProxyReplacement"            = var.kube_proxy_replacement
+    "hubble.ui.enabled"               = var.enable_hubble_ui
+    "image.pullPolicy"                = "IfNotPresent"
+    "ipam.mode"                       = "kubernetes"
+    "ipv4NativeRoutingCIDR"           = data.terraform_remote_state.kind.outputs.pod_subnet
   }
 
   # Merge with additional values

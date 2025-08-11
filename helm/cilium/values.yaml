@@ -8,6 +8,11 @@ cluster:
 # Kube-proxy replacement
 kubeProxyReplacement: true
 
+# IPv4 configuration
+ipv4:
+  enabled: true
+  # nativeRoutingCIDR will be set by Terraform from Kind's pod subnet
+
 # Routing - native mode without tunneling
 routingMode: "native"
 autoDirectNodeRoutes: true
@@ -15,6 +20,10 @@ autoDirectNodeRoutes: true
 # IPAM
 ipam:
   mode: kubernetes
+
+# Masquerading
+enableIPv4Masquerade: true
+enableIPMasqAgent: false
 
 # Basic Hubble setup
 hubble:
