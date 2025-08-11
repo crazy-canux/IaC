@@ -10,23 +10,21 @@ data "terraform_remote_state" "kind" {
 # Wait for cluster to be ready before installing Cilium
 resource "time_sleep" "wait_for_cluster" {
   create_duration = "30s"
+  
+  # Ensure we wait for the Kind cluster to be completely ready
+  depends_on = [data.terraform_remote_state.kind]
 }
 
-# Determine values file based on environment
+# Local values for configuration
 locals {
-  values_file = var.environment == "production" ? "../../helm/cilium/values-production.yaml" : var.values_file_path
-
-  # Get cluster info from Kind module state
-  cluster_name = try(data.terraform_remote_state.kind.outputs.cluster_name, var.cluster_name)
+  # Get cluster info directly from Kind module outputs
+  cluster_name = data.terraform_remote_state.kind.outputs.cluster_name
   
-  # Use default kubeconfig location since Kind updates ~/.kube/config
-  kubeconfig_path = var.kubeconfig_path != "" ? var.kubeconfig_path : "~/.kube/config"
-
-  # Dynamic values based on Kind cluster
+  # Dynamic values based on Kind cluster outputs
   dynamic_values = {
     "cluster.name"         = local.cluster_name
-    "k8sServiceHost"       = "${local.cluster_name}-control-plane"
-    "k8sServicePort"       = 6443
+    "k8sServiceHost"       = data.terraform_remote_state.kind.outputs.api_server_host
+    "k8sServicePort"       = data.terraform_remote_state.kind.outputs.api_server_port
     "kubeProxyReplacement" = var.kube_proxy_replacement
     "hubble.ui.enabled"    = var.enable_hubble_ui
     "image.pullPolicy"     = "IfNotPresent"
@@ -50,7 +48,7 @@ resource "helm_release" "cilium" {
 
   # Load values from file
   values = [
-    file(local.values_file)
+    file(var.values_file_path)
   ]
 
   # Dynamic set values
@@ -65,7 +63,7 @@ resource "helm_release" "cilium" {
   # Cleanup on fail and wait for deployment
   cleanup_on_fail = true
   wait            = var.wait_for_deployment
-  timeout         = 300  # Reduced from 600 to 5 minutes
+  timeout         = var.timeout
   recreate_pods   = true
 }
 

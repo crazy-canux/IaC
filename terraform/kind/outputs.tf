@@ -8,11 +8,6 @@ output "cluster_endpoint" {
   value       = kind_cluster.main.endpoint
 }
 
-output "kubeconfig_path" {
-  description = "Path to the kubeconfig file"
-  value       = kind_cluster.main.kubeconfig_path
-}
-
 output "cluster_ca_certificate" {
   description = "Base64 encoded cluster CA certificate"
   value       = kind_cluster.main.cluster_ca_certificate
@@ -67,4 +62,9 @@ output "service_subnet" {
 output "cni_disabled" {
   description = "Whether default CNI is disabled"
   value       = var.disable_default_cni
+}
+
+output "kubeconfig_file_path" {
+  description = "Path to the generated kubeconfig file"
+  value       = local_file.kubeconfig.filename
 }

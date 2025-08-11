@@ -16,16 +16,16 @@ terraform {
   }
 }
 
-# Configure Helm provider
+# Configure Helm provider - uses kubeconfig from Kind cluster
 provider "helm" {
   kubernetes {
-    config_path = local.kubeconfig_path
+    config_path = var.kubeconfig_path
   }
 }
 
-# Configure Kubernetes provider  
+# Configure Kubernetes provider - uses kubeconfig from Kind cluster  
 provider "kubernetes" {
-  config_path = local.kubeconfig_path
+  config_path = var.kubeconfig_path
 }
 
 # Configure Time provider

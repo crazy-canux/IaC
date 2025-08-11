@@ -9,6 +9,10 @@ terraform {
       source  = "hashicorp/time"
       version = "~> 0.12.0"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.4.0"
+    }
   }
 }
 
@@ -17,3 +21,6 @@ provider "kind" {}
 
 # Configure Time provider for wait resources
 provider "time" {}
+
+# Configure Local provider for file operations
+provider "local" {}

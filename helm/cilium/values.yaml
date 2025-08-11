@@ -1,5 +1,5 @@
-# Cilium Helm Values for Kind Clusters
-# Optimized configuration for local development with Kind
+# Cilium Helm Values for Production Environment
+# Optimized configuration with HA and production-grade settings
 
 # Image configuration
 image:
@@ -7,104 +7,142 @@ image:
   tag: "v1.17.1"
   pullPolicy: "IfNotPresent"
 
-# Operator configuration
+# Operator configuration - HA setup
 operator:
   image:
     repository: "quay.io/cilium/operator"
     tag: "v1.17.1"
     pullPolicy: "IfNotPresent"
-  replicas: 1  # Single replica for Kind clusters
+  replicas: 2  # HA for production
 
-# IPAM (IP Address Management)
+# IPAM configuration
 ipam:
-  mode: kubernetes  # Use Kubernetes native IPAM
+  mode: kubernetes
 
-# Networking configuration
+# Cluster configuration - will be overridden by Terraform with Kind cluster name
 cluster:
-  name: "kind-cluster"
+  name: "iac-lab"  # Default, will use actual Kind cluster name
+  id: 1
 
-# Kube-proxy replacement
+# Kube-proxy replacement for better performance
 kubeProxyReplacement: true
 
-# Enable IPv4 and disable IPv6 for simplicity
+# IPv4/IPv6 configuration
 ipv4:
   enabled: true
 ipv6:
   enabled: false
 
-# BGP configuration (disabled for Kind)
+# BGP configuration (can be enabled for production)
 bgp:
   enabled: false
 
-# Routing mode
+# Routing configuration
 routingMode: "native"
 autoDirectNodeRoutes: true
+tunnel: "disabled"
 
-# Tunnel configuration - removed deprecated option
-# tunnel: "disabled"  # Deprecated in v1.15 - use routingMode instead
+# Security and policy enforcement - Production grade
+policyEnforcementMode: "always"
+policyAuditMode: true
 
-# Security and policies
-policyEnforcementMode: "default"
-policyAuditMode: false
-
-# Hubble (observability)
+# Hubble observability - full production setup
 hubble:
   enabled: true
+  metrics:
+    enabled:
+      - dns
+      - drop
+      - tcp
+      - flow
+      - icmp
+      - http
   relay:
     enabled: true
     image:
       repository: "quay.io/cilium/hubble-relay"
       tag: "v1.17.1"
+    replicas: 2  # HA
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
   ui:
     enabled: true
     image:
       repository: "quay.io/cilium/hubble-ui"
       tag: "v0.13.1"
+    replicas: 2  # HA
     service:
-      type: NodePort
-      nodePort: 31234
+      type: ClusterIP  # Use ingress for production
 
-# Debug and development settings
+# Debug disabled for production
 debug:
   enabled: false
 
-# Resource requirements (optimized for Kind)
+# Production resource requirements
 resources:
   limits:
-    cpu: 1000m
-    memory: 1Gi
+    cpu: 2000m
+    memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 200m
+    memory: 256Mi
 
-# Node selector and tolerations
+# Node affinity and tolerations
 nodeSelector: {}
 tolerations:
   - operator: Exists
 
-# Prometheus monitoring
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              k8s-app: cilium
+          topologyKey: kubernetes.io/hostname
+
+# Monitoring and observability
 prometheus:
   enabled: true
   serviceMonitor:
-    enabled: false  # Disable unless you have Prometheus operator
+    enabled: true
+    labels:
+      app: cilium
 
-# Health checking
+# Health and liveness probes
 healthChecking: true
+livenessProbe:
+  failureThreshold: 10
+  periodSeconds: 30
+  successThreshold: 1
+  timeoutSeconds: 5
+readinessProbe:
+  failureThreshold: 3
+  periodSeconds: 30
+  successThreshold: 1
+  timeoutSeconds: 5
 
 # Load balancing
 loadBalancer:
   algorithm: "random"
   mode: "snat"
 
-# Container runtime - removed deprecated option
-# containerRuntime:
-#   integration: "containerd"  # Deprecated in v1.16
+# Container runtime
+containerRuntime:
+  integration: "containerd"
 
-# Kubernetes service configuration
-k8sServiceHost: "kind-control-plane"
-k8sServicePort: 6443
-
-# Enable API rate limiting
+# High API rate limits for production
 k8sClientRateLimit:
-  qps: 10
-  burst: 20
+  qps: 50
+  burst: 100
+
+# Encryption enabled for production security
+encryption:
+  enabled: true
+  type: "wireguard"
