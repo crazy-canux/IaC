@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jupyterhub
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: services
+  sources:
+    # JupyterHub Helm Chart
+    - repoURL: https://hub.jupyter.org/helm-chart/
+      targetRevision: 3.3.7
+      chart: jupyterhub
+      helm:
+        releaseName: jupyterhub
+        valueFiles:
+          - $values/helm/jupyterhub/values.yaml
+    
+    # Configuration repository
+    - repoURL: https://github.com/crazy-canux/IaC.git
+      targetRevision: HEAD
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: jupyterhub
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=foreground
+    - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  ignoreDifferences:
+  - group: ""
+    kind: "Secret"
+    name: "proxy-secret-token"
+    jsonPointers:
+    - /data

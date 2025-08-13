@@ -1,0 +1,148 @@
+# JupyterHub Configuration
+# Zero to JupyterHub (Z2JH) Configuration for Mac Pro / Kind Cluster
+# Reference: https://z2jh.jupyter.org/en/stable/
+
+# Proxy configuration
+proxy:
+  secretToken: "your-secret-token-here-change-this-in-production"
+  service:
+    type: ClusterIP  # Use with port-forward for Kind cluster
+  chp:
+    resources:
+      requests:
+        memory: 320Mi
+        cpu: 0.1
+      limits:
+        memory: 1Gi
+        cpu: 1
+  traefik:
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 0.25
+      limits:
+        memory: 1Gi
+        cpu: 1
+
+# Hub configuration
+hub:
+  # Database configuration - SQLite for simplicity
+  db:
+    type: sqlite-pvc
+    pvc:
+      storageClassName: standard
+      storage: 1Gi
+  
+  # Hub resources
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.25
+    limits:
+      memory: 1Gi
+      cpu: 1
+  
+  # Authentication configuration
+  config:
+    JupyterHub:
+      admin_access: true
+      authenticator_class: 'dummy'  # Simple auth for development
+    DummyAuthenticator:
+      password: 'jupyter'  # Simple password for testing
+    Authenticator:
+      admin_users:
+        - admin
+        - jupyter
+      allowed_users:
+        - admin
+        - jupyter
+        - user1
+        - user2
+  
+  # Additional hub configuration
+  extraConfig:
+    customConfig: |
+      c.JupyterHub.logo_file = '/usr/local/share/jupyterhub/static/images/jupyter.png'
+      c.JupyterHub.template_paths = ['/usr/local/share/jupyterhub/custom_templates/', 
+                                     '/usr/local/share/jupyterhub/templates/']
+
+# Single-user notebook configuration
+singleuser:
+  # Default image
+  image:
+    name: quay.io/jupyterhub/k8s-singleuser-sample
+    tag: "3.2.1"
+    pullPolicy: IfNotPresent
+  
+  # Start timeout
+  startTimeout: 600
+  
+  # CPU/Memory limits
+  cpu:
+    limit: 1
+    guarantee: 0.1
+  memory:
+    limit: 2G
+    guarantee: 512M
+  
+  # Storage
+  storage:
+    type: dynamic
+    dynamic:
+      storageClass: standard
+    capacity: 2Gi
+    homeMountPath: /home/jovyan
+  
+  # Default URL for users
+  defaultUrl: "/lab"
+  
+  # File system group ID
+  fsGid: 1000
+  
+  # Network policy - disabled for Kind cluster
+  networkPolicy:
+    enabled: false
+  
+  # Additional environment variables
+  extraEnv:
+    EDITOR: "nano"
+  
+  # Lifecycle hooks
+  lifecycleHooks:
+    postStart:
+      exec:
+        command:
+          - "sh"
+          - "-c"
+          - >
+            mkdir -p /home/jovyan/work;
+
+# Scheduling configuration
+scheduling:
+  userScheduler:
+    enabled: false  # Disabled for Kind cluster
+  
+  podPriority:
+    enabled: false
+  
+  userPlaceholder:
+    enabled: false  # Disabled for Kind cluster
+
+# Ingress configuration - disabled for Kind (use port-forward)
+ingress:
+  enabled: false
+
+# RBAC
+rbac:
+  create: true
+
+# Debug mode
+debug:
+  enabled: false
+
+# Custom configuration for development
+custom:
+  # Additional labels
+  commonLabels:
+    app.kubernetes.io/part-of: jupyterhub
+    environment: development
