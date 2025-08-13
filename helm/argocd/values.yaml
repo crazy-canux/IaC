@@ -1,0 +1,150 @@
+# ArgoCD Helm Values - Production Configuration
+
+# Global configuration
+global:
+  # Disable Prometheus metrics by default
+  prometheus:
+    enabled: false
+
+# ArgoCD Server configuration
+server:
+  # Enable ArgoCD server
+  enabled: true
+  
+  # Replica count for high availability
+  replicas: 1
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+  
+  # Ingress configuration (disabled by default)
+  ingress:
+    enabled: false
+  
+  # Resource limits
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 999
+    fsGroup: 999
+  
+  # Config
+  config:
+    # URL for ArgoCD server
+    url: ""
+    
+    # OIDC configuration (disabled by default)
+    oidc.config: ""
+
+# Controller configuration
+controller:
+  # Enable ArgoCD application controller
+  enabled: true
+  
+  # Replica count
+  replicas: 1
+  
+  # Resource limits
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 999
+    fsGroup: 999
+
+# Repository server configuration
+repoServer:
+  # Enable repository server
+  enabled: true
+  
+  # Replica count
+  replicas: 1
+  
+  # Resource limits
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 999
+    fsGroup: 999
+
+# Dex server configuration (OIDC)
+dex:
+  # Disable Dex by default
+  enabled: false
+
+# Redis configuration
+redis:
+  # Enable Redis
+  enabled: true
+  
+  # Resource limits
+  resources:
+    limits:
+      cpu: 200m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+# Application Set controller
+applicationSet:
+  # Enable Application Set controller
+  enabled: true
+  
+  # Resource limits
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+# Notifications controller
+notifications:
+  # Disable notifications by default
+  enabled: false
+
+# Config management
+configs:
+  # Repository credentials
+  repositories: {}
+  
+  # Cluster credentials
+  clusters: {}
+  
+  # Known hosts
+  knownHosts:
+    data:
+      ssh_known_hosts: |
+        github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+        github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8LGDX1GZDKA7FqcTs6DZr0w1xGYZbz6gRJgGD9Y3f1mY+GYH7uYLbG3ZuRZ4rZ/+1qfkR7v8T9H9rXKlQPrKHdx3TaYc/KCVR5dXk2R/b7GbVgKGUPQoTfYAYF/YEwU8C5Z7qL7VZ1xGYZbz6gRJgGD9Y3f1mY+GYH7uYLbG3ZuRZ4rZ/+1qfkR7v8T9H9rXKlQPrKHdx3TaYc/KCVR5dXk2R/b7GbVgKGUPQoTfYAYF/YEwU8C5Z7qL7VZ1xGYZbz6gRJgGD9Y3f1mY+GYH7uYLbG3ZuRZ4rZ/+1qfkR7v8T9H9rXKlQPrKHdx3TaYc/KC
+        gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=
+        gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7k0VCsKhppgq8qbZ0M1AQ6xU8wF0dKhO1+ueWKoyeO9xLKJZwCL/Mj9kbJr0/e3vN0qEt4uZ6pNMwJrIFjVznzj6d9y7NwHYQK1X4vQNUaDc+WsYZ7Y4+3fD0K+WcKb8hWrAQ9Wx+M8rCk7w9qhDyeFgQeI/f0QzOL7C5K4VlX3J7E7G2+Z2nG2lE3T5vF6R0cQQD8J2G1v8T5F5xJQ6o
+        bitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDQeJzhupRu0u0cdegZIa8e86EG2SLPKtAqt0LEU8z3THATQGgvZd3qGHgQ7vn+o6G3+V5H3g3j3S4K6rE+mq0V3v3xNr9Ye8K5nSz7HvONqcxfF8Q1YKL6sB8RRTU1A/xtRpRpUVMRzDgHqIZLDc9Wz2J3V9s5F0T0K4oQ5Qj6jJGNJFdaP7v9JsY3q7UGD1g1WZCo/7rM4U3S0gJO/sNW9QLgH6QJR1h2L6tL7NjI7LG9EQQtOFf1E2TgM0Uv9iBJWrQl6gJqhpOoI7R3RJWaE8X0YmLr2sXI8g6J2F6zJO1Y7y6N6e4v6oD0O6m1L1YK1L2Z8M4cF5C9Z2W5J3W9O7A4T7g3C2S7Q2F7W0S9C6y5K7M2C2T4m0O1J1E9H5N1L2W8e2D3a3C8C2W7W9J6r8A0q3T5S1e8X5L8z0W5oA2o0K5x7S5b4X4L6z3S2X7N6O7M0C2T2d6W8f4S2X4t2T8o9X0E5F5u7T4a5S4j8W5g7O4Y1e5h4i8G5v8r1E8N8b2L1A1P5S5D0w0o3A5Y6X6e1U5E3n1c8F5L5e7M5Z9X1P5C4A0M7p0V3J8Y5V3V
