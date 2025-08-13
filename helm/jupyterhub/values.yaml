@@ -128,9 +128,18 @@ scheduling:
   userPlaceholder:
     enabled: false  # Disabled for Kind cluster
 
-# Ingress configuration - disabled for Kind (use port-forward)
+# Ingress configuration
 ingress:
-  enabled: false
+  enabled: true
+  ingressClassName: nginx
+  hosts:
+    - jupyterhub.local
+  pathSuffix: ""
+  pathType: Prefix
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 
 # RBAC
 rbac:

@@ -20,9 +20,19 @@ server:
     port: 80
     targetPort: 8080
   
-  # Ingress configuration (disabled by default)
+  # Ingress configuration
   ingress:
-    enabled: false
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - argocd.local
+    paths:
+      - /
+    pathType: Prefix
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
   
   # Resource limits
   resources:
@@ -133,6 +143,11 @@ notifications:
 
 # Config management
 configs:
+  # Command line parameters
+  params:
+    # Enable insecure mode for local development
+    server.insecure: true
+  
   # Repository credentials
   repositories: {}
   

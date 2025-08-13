@@ -26,11 +26,12 @@ Use argocd to deploy argocd.
 
 Use argocd-apps to deploy middlewares and applications.
 
+* ingress-nginx
 * external-dns
 * cert-manager
-* ingress-nginx
 * prometheus
 * grafana
 * loki
 * tempo
 * alertmanager
+* jupyterhub

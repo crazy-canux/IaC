@@ -1,0 +1,60 @@
+# NGINX Ingress Controller Helm Values - Kind Configuration
+
+controller:
+  # Enable NodePort service for Kind cluster
+  service:
+    type: NodePort
+    nodePorts:
+      http: 30080
+      https: 30443
+  
+  # Disable admission webhooks for local development
+  admissionWebhooks:
+    enabled: false
+  
+  # Resource limits for local development
+  resources:
+    requests:
+      cpu: 100m
+      memory: 90Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  
+  # Enable metrics
+  metrics:
+    enabled: true
+  
+  # Configuration for Kind
+  config:
+    use-forwarded-headers: "true"
+    compute-full-forwarded-for: "true"
+    use-proxy-protocol: "false"
+  
+  # DaemonSet mode for better performance in Kind
+  kind: DaemonSet
+  
+  # Node selector to run on worker nodes
+  nodeSelector:
+    kubernetes.io/os: linux
+  
+  # Tolerations for worker nodes
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Equal
+      effect: NoSchedule
+
+# Default backend configuration
+defaultBackend:
+  enabled: true
+  resources:
+    requests:
+      cpu: 10m
+      memory: 20Mi
+    limits:
+      cpu: 50m
+      memory: 50Mi
+
+# TCP/UDP ConfigMap configurations
+tcp: {}
+udp: {}

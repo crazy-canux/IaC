@@ -43,26 +43,36 @@ locals {
 # Deploy AppProjects
 resource "kubectl_manifest" "middleware_project" {
   yaml_body = file("../../manifests/projects/middleware.yaml")
-  
+
   depends_on = [data.terraform_remote_state.argocd]
 }
 
 resource "kubectl_manifest" "monitoring_project" {
   yaml_body = file("../../manifests/projects/monitoring.yaml")
-  
+
   depends_on = [data.terraform_remote_state.argocd]
 }
 
 resource "kubectl_manifest" "services_project" {
   yaml_body = file("../../manifests/projects/services.yaml")
-  
+
   depends_on = [data.terraform_remote_state.argocd]
+}
+
+# Deploy NGINX Ingress Controller
+resource "kubectl_manifest" "ingress_nginx_application" {
+  yaml_body = file("../../manifests/ingress-nginx/application.yaml")
+
+  depends_on = [
+    kubectl_manifest.middleware_project,
+    data.terraform_remote_state.argocd
+  ]
 }
 
 # Deploy JupyterHub Application
 resource "kubectl_manifest" "jupyterhub_application" {
   yaml_body = file("../../manifests/jupyterhub/application.yaml")
-  
+
   depends_on = [
     kubectl_manifest.services_project,
     data.terraform_remote_state.argocd
@@ -72,7 +82,7 @@ resource "kubectl_manifest" "jupyterhub_application" {
 # Wait for ArgoCD applications to be ready
 resource "time_sleep" "wait_for_applications" {
   create_duration = "30s"
-  
+
   depends_on = [
     kubectl_manifest.jupyterhub_application
   ]
