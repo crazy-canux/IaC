@@ -34,12 +34,9 @@ controller:
   # DaemonSet mode for better performance in Kind
   kind: DaemonSet
 
-  # Enable hostPort to match Kind's port mappings (8080->80, 8443->443)
-  hostPort:
-    enabled: true
-    ports:
-      http: 80
-      https: 443
+  # Prefer binding directly to node network to match Kind 8080/8443 mappings
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
   
   # Node selector to run on worker nodes
   nodeSelector:
