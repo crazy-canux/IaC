@@ -136,6 +136,10 @@ echo "127.0.0.1 jupyterhub.local" | sudo tee -a /etc/hosts
 | **ArgoCD** | <http://argocd.local:8080> | admin / [get password](#-credentials) |
 | **JupyterHub** | <http://jupyterhub.local:8080> | admin, jupyter, user1, user2 / jupyter |
 
+## 📷 Screenshots
+
+![ArgoCD UI](assets/images/argocd.png "ArgoCD UI")
+
 ## 🔐 Credentials
 
 ### ArgoCD Admin Password

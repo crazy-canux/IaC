@@ -75,7 +75,7 @@ singleuser:
     pullPolicy: IfNotPresent
   
   # Start timeout
-  startTimeout: 600
+  startTimeout: 900
   
   # CPU/Memory limits
   cpu:
@@ -91,10 +91,9 @@ singleuser:
     dynamic:
       storageClass: standard
       storageAccessModes: ["ReadWriteOnce"]
-      pvcNameTemplate: "claim-{username}"
-      volumeNameTemplate: "volume-{username}"
+      pvcNameTemplate: "jhub-claim-{username}"
     capacity: "2Gi"
-    homeMountPath: /home/canux
+    homeMountPath: /home/jovyan
   
   # Default URL for users
   defaultUrl: "/lab"
@@ -118,7 +117,7 @@ singleuser:
           - "sh"
           - "-c"
           - >
-            mkdir -p /home/canux/work;
+            mkdir -p /home/jovyan/work;
 
 # Scheduling configuration
 scheduling:
