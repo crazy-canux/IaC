@@ -33,10 +33,6 @@ controller:
   
   # DaemonSet mode for better performance in Kind
   kind: DaemonSet
-
-  # Prefer binding directly to node network to match Kind 8080/8443 mappings
-  hostNetwork: true
-  dnsPolicy: ClusterFirstWithHostNet
   
   # Node selector to run on worker nodes
   nodeSelector:

@@ -21,6 +21,16 @@ resource "kind_cluster" "main" {
       content {
         role  = "control-plane"
         image = "kindest/node:${var.kubernetes_version}"
+
+        # Mount proxy env file if enabled
+        dynamic "extra_mounts" {
+          for_each = var.enable_proxy ? [1] : []
+          content {
+            host_path      = "${path.module}/proxy/http-proxy.conf"
+            container_path = "/etc/systemd/system/containerd.service.d/http-proxy.conf"
+            read_only      = true
+          }
+        }
       }
     }
 
@@ -41,13 +51,13 @@ resource "kind_cluster" "main" {
           }
         }
 
-        # Add extra mounts if specified
+        # Mount proxy env file if enabled
         dynamic "extra_mounts" {
-          for_each = var.extra_mounts
+          for_each = var.enable_proxy ? [1] : []
           content {
-            host_path      = extra_mounts.value.host_path
-            container_path = extra_mounts.value.container_path
-            read_only      = extra_mounts.value.readonly
+            host_path      = "${path.module}/proxy/http-proxy.conf"
+            container_path = "/etc/systemd/system/containerd.service.d/http-proxy.conf"
+            read_only      = true
           }
         }
       }

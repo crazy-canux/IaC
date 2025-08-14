@@ -73,12 +73,12 @@ variable "node_port_mappings" {
   }))
   default = [
     {
-      container_port = 80
+      container_port = 30080
       host_port      = 8080
       protocol       = "TCP"
     },
     {
-      container_port = 443
+      container_port = 30443
       host_port      = 8443
       protocol       = "TCP"
     }
@@ -102,4 +102,16 @@ variable "labels" {
     managed-by = "terraform"
     project    = "kind-cluster"
   }
+}
+
+variable "enable_proxy" {
+  description = "Enable HTTP/HTTPS proxy inside Kind nodes for containerd"
+  type        = bool
+  default     = true
+}
+
+variable "proxy_port" {
+  description = "Host proxy port to use via host.docker.internal"
+  type        = number
+  default     = 40009
 }

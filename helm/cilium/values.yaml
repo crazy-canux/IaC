@@ -52,3 +52,35 @@ policyEnforcementMode: "default"
 # Disable encryption for now (can cause issues in Kind)
 encryption:
   enabled: false
+
+# Keep Cilium resources in kube-system and store all related secrets there
+# instead of creating the separate "cilium-secrets" namespace.
+# These overrides are safe for Kind/labs and reduce namespace clutter.
+tls:
+  secretsNamespace:
+    create: false
+    name: kube-system
+
+envoyConfig:
+  secretsNamespace:
+    create: false
+    name: kube-system
+
+ingressController:
+  secretsNamespace:
+    create: false
+    name: kube-system
+    sync: true
+
+gatewayAPI:
+  secretsNamespace:
+    create: false
+    name: kube-system
+    sync: true
+
+# Optional: if you enable BGP, ensure secrets live in kube-system as well
+bgpControlPlane:
+  enabled: false
+  secretsNamespace:
+    create: false
+    name: kube-system
