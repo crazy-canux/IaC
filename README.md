@@ -140,6 +140,8 @@ echo "127.0.0.1 jupyterhub.local" | sudo tee -a /etc/hosts
 
 ![ArgoCD UI](assets/images/argocd.png "ArgoCD UI")
 
+![JupyterHub UI](assets/images/jupyterhub.png "JupyterHub UI")
+
 ## 🔐 Credentials
 
 ### ArgoCD Admin Password
