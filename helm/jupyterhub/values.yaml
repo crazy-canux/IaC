@@ -90,8 +90,11 @@ singleuser:
     type: dynamic
     dynamic:
       storageClass: standard
-    capacity: 2Gi
-    homeMountPath: /home/jovyan
+      storageAccessModes: ["ReadWriteOnce"]
+      pvcNameTemplate: "claim-{username}"
+      volumeNameTemplate: "volume-{username}"
+    capacity: "2Gi"
+    homeMountPath: /home/canux
   
   # Default URL for users
   defaultUrl: "/lab"
@@ -115,7 +118,7 @@ singleuser:
           - "sh"
           - "-c"
           - >
-            mkdir -p /home/jovyan/work;
+            mkdir -p /home/canux/work;
 
 # Scheduling configuration
 scheduling:

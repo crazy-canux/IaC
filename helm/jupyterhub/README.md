@@ -26,7 +26,7 @@ The values file configures:
 - **Authentication**: DummyAuthenticator for testing (change in production)
 - **Single-user**: Notebook server configuration with resource limits
 - **Storage**: Persistent storage for both hub and user notebooks
-- **Network**: Configured for Kind cluster (no ingress, uses port-forward)
+- **Network**: Exposed via ingress-nginx with host `jupyterhub.local` (Kind maps host 8080 to the ingress NodePort)
 
 ## Key Features
 
@@ -44,15 +44,27 @@ The values file configures:
 
 ## Access Methods
 
-### Local Development (Kind)
-```bash
-# Port forward to access JupyterHub
-kubectl port-forward svc/proxy-public 8888:80 -n jupyterhub
+### Via Ingress (default)
 
-# Access at http://localhost:8888
+1. Add to your /etc/hosts:
+   127.0.0.1 jupyterhub.local
+
+2. Open: [http://jupyterhub.local:8080](http://jupyterhub.local:8080)
+
+Notes:
+
+- Ingress class is `nginx` and the ArgoCD Application deploys the Ingress.
+- Kind forwards host 8080 to the ingress-nginx NodePort 30080.
+
+### Alternative: Port-forward (when ingress is disabled)
+
+```bash
+kubectl -n jupyterhub port-forward svc/proxy-public 8888:80
+# then open http://localhost:8888
 ```
 
 ### Production
+
 Configure ingress in values file for external access with proper domain and TLS.
 
 ## Storage
@@ -72,8 +84,9 @@ Configure ingress in values file for external access with proper domain and TLS.
 ### Environment-Specific Configuration
 
 Create additional values files for different environments:
+
 - `values.yaml` - Development/Kind cluster
-- `values-staging.yaml` - Staging environment  
+- `values-staging.yaml` - Staging environment
 - `values-production.yaml` - Production environment
 
 Update ArgoCD application to use appropriate values file per environment.
@@ -81,6 +94,7 @@ Update ArgoCD application to use appropriate values file per environment.
 ## Validation
 
 A comprehensive validation notebook is available at:
+
 - `validation/jupyterhub-compliance-check.ipynb`
 
 This notebook validates the deployment against Z2JH specifications and provides health monitoring.
@@ -96,18 +110,36 @@ To customize the deployment:
 ## Security Notes
 
 ⚠️ **This configuration is for development/testing only:**
+
 - Uses DummyAuthenticator with simple passwords
 - No TLS/SSL configuration
 - No network policies enabled
 - Simplified RBAC
 
 For production use:
+
 - Configure proper authentication (OAuth, LDAP, etc.)
-- Enable TLS with proper certificates  
+- Enable TLS with proper certificates
 - Implement network policies
 - Use stronger passwords/secrets
 - Configure resource quotas
 - Enable monitoring and logging
+
+## Troubleshooting
+
+- User spawn fails with “Could not create PVC claim-USERNAME”
+  - Ensure StorageClass `standard` exists and is default.
+  - Confirm ArgoCD applied namespace policies (ResourceQuota/LimitRange) and hub RBAC allowing PVC create/update/patch.
+  - Check events: `kubectl -n jupyterhub get events --sort-by=.lastTimestamp | tail -n 50`.
+- Image pulls fail behind a proxy
+  - This stack configures containerd proxy inside Kind nodes via `host.docker.internal:40009`.
+  - If your proxy port/host differs, update the Kind proxy drop-in in Terraform and re-apply the cluster module.
+- Ingress not reachable (404/timeout)
+  - Verify ingress-nginx is Running and the Service exposes NodePorts 30080/30443.
+  - Confirm /etc/hosts has `jupyterhub.local` → 127.0.0.1 and ArgoCD app is Synced.
+  - Quick check: `curl -sI -H 'Host: jupyterhub.local' http://localhost:8080 | head -n1` should return 302/200.
+- Hub readiness probe flapping
+  - Wait for the hub DB PVC (`hub-db-dir`) to be Bound; inspect hub logs: `kubectl -n jupyterhub logs deploy/hub`.
 
 ## Reference
 
