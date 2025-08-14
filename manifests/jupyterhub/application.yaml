@@ -19,7 +19,7 @@ spec:
     
     # Configuration repository
     - repoURL: https://github.com/crazy-canux/IaC.git
-      targetRevision: HEAD
+      targetRevision: main
       ref: values
 
   destination:

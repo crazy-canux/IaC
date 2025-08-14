@@ -56,6 +56,10 @@ server:
     
     # OIDC configuration (disabled by default)
     oidc.config: ""
+    
+    # Repository server timeout settings
+    timeout.reconciliation: 180s
+    timeout.hard.reconciliation: 0s
 
 # Controller configuration
 controller:
@@ -102,6 +106,11 @@ repoServer:
     runAsNonRoot: true
     runAsUser: 999
     fsGroup: 999
+  
+  # Environment variables for better Git handling
+  env:
+    - name: ARGOCD_EXEC_TIMEOUT
+      value: "300s"
 
 # Dex server configuration (OIDC)
 dex:
@@ -147,6 +156,9 @@ configs:
   params:
     # Enable insecure mode for local development
     server.insecure: true
+    # Increase repository server timeout
+    controller.repo.server.timeout.seconds: 300
+    reposerver.parallelism.limit: 0
   
   # Repository credentials
   repositories: {}
