@@ -65,6 +65,17 @@ hub:
       c.JupyterHub.logo_file = '/usr/local/share/jupyterhub/static/images/jupyter.png'
       c.JupyterHub.template_paths = ['/usr/local/share/jupyterhub/custom_templates/', 
                                      '/usr/local/share/jupyterhub/templates/']
+  
+  # Ensure hub can reach K8s API (disable NP and clear proxies)
+  networkPolicy:
+    enabled: false
+  extraEnv:
+    HTTP_PROXY: ""
+    HTTPS_PROXY: ""
+    http_proxy: ""
+    https_proxy: ""
+    NO_PROXY: ".svc,.cluster.local,localhost,127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+    no_proxy: ".svc,.cluster.local,localhost,127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
 
 # Single-user notebook configuration
 singleuser:
