@@ -67,7 +67,7 @@ variable "server_service_type" {
 variable "enable_ingress" {
   description = "Enable ingress for ArgoCD server"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "ingress_hostname" {
