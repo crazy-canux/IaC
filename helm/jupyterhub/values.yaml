@@ -136,7 +136,7 @@ singleuser:
           - "sh"
           - "-c"
           - >
-            mkdir -p /home/jovyan/work;
+            mkdir -p /home/jovyan/work /home/jovyan/share;
 
 # Scheduling configuration
 scheduling:
