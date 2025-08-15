@@ -80,3 +80,9 @@ kubectl get nodes
 # Access Hubble UI (if enabled)
 kubectl port-forward -n kube-system svc/hubble-ui 12000:80
 ```
+
+## Troubleshooting
+
+### Pull image issue
+
+If you are using VPN, don't setup proxy for shell. Let docker use it's own proxy.

@@ -3,6 +3,9 @@ kind: AppProject
 metadata:
   name: middleware
   namespace: argocd
+  # Annotations to control cleanup behavior
+  annotations:
+    argocd.argoproj.io/sync-options: "PrunePropagationPolicy=foreground,PruneLast=true"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:

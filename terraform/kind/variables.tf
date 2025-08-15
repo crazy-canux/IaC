@@ -95,6 +95,19 @@ variable "extra_mounts" {
   default = []
 }
 
+# Host folder sharing into kind nodes (for JupyterHub access)
+variable "host_share_dir" {
+  description = "Absolute path on macOS to share into kind nodes (e.g. /Users/<you>/jupyterhub). Leave empty to disable."
+  type        = string
+  default     = "/Users/canux/jupyterhub"
+}
+
+variable "host_share_mount_path" {
+  description = "Path inside kind nodes where the host folder will be mounted."
+  type        = string
+  default     = "/mnt/host/jupyterhub"
+}
+
 variable "labels" {
   description = "Labels to apply to resources"
   type        = map(string)
@@ -102,16 +115,4 @@ variable "labels" {
     managed-by = "terraform"
     project    = "kind-cluster"
   }
-}
-
-variable "enable_proxy" {
-  description = "Enable HTTP/HTTPS proxy inside Kind nodes for containerd"
-  type        = bool
-  default     = true
-}
-
-variable "proxy_port" {
-  description = "Host proxy port to use via host.docker.internal"
-  type        = number
-  default     = 40009
 }

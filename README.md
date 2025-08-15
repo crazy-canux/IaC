@@ -105,7 +105,7 @@ cd ../cilium
 terraform init && terraform apply -auto-approve
 
 # Deploy Vault with PKI engine
-cd ../vaults
+cd ../vault
 terraform init && terraform apply -auto-approve
 
 # Deploy certificate management and DNS automation
@@ -154,34 +154,6 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.pas
 
 - **Username**: `admin`, `jupyter`, `user1`, `user2`
 - **Password**: `jupyter`
-
-## 📁 Project Structure
-
-```text
-IaC/
-├── 📁 terraform/           # Infrastructure as Code
-│   ├── 📁 kind/           # Local Kubernetes cluster
-│   ├── 📁 cilium/         # CNI and network policies
-│   ├── 📁 argocd/         # GitOps platform
-│   ├── 📁 argocd-apps/    # Application deployments
-│   ├── 📁 vaults/         # HashiCorp Vault with PKI
-│   ├── 📁 bank-vaults/    # Vault-Kubernetes integration
-│   ├── 📁 kubeadm/        # Production cluster option
-│   └── 📁 karpenter/      # Autoscaling (AWS)
-├── 📁 helm/              # Helm value files
-│   ├── 📁 argocd/        # ArgoCD configuration
-│   ├── 📁 jupyterhub/    # JupyterHub configuration
-│   ├── 📁 cilium/        # Cilium configuration
-│   ├── 📁 vaults/        # Vault configuration
-│   └── 📁 bank-vaults/   # Bank-Vaults configuration
-├── 📁 manifests/         # ArgoCD applications
-│   ├── 📁 ingress-nginx/ # Load balancer
-│   ├── 📁 cert-manager/  # Certificate management
-│   ├── 📁 external-dns/  # DNS automation
-│   ├── 📁 jupyterhub/    # AI/ML platform
-│   └── 📁 vaults/        # Vault applications
-└── 📄 README.md          # This file
-```
 
 ## 🎓 Use Cases
 

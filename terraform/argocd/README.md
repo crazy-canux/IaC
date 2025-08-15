@@ -93,3 +93,9 @@ The module deploys:
 - Network policies can be added
 - RBAC configured by Helm chart
 - Admin password is stored in Kubernetes secret
+
+## Troubleshooting
+
+### helm download issue
+
+If you are using VPN, you have to setup proxy for shell. Otherwise, Helm will fail to download the chart.

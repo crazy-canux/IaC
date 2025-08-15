@@ -120,6 +120,17 @@ singleuser:
   extraEnv:
     EDITOR: "nano"
   
+  # Extra volumes to mount host share from kind nodes into pods
+  extraVolumes:
+    - name: host-share
+      hostPath:
+        path: /mnt/host/jupyterhub
+        type: DirectoryOrCreate
+  extraVolumeMounts:
+    - name: host-share
+      mountPath: /home/jovyan/host-share
+      readOnly: false
+  
   # Lifecycle hooks
   lifecycleHooks:
     postStart:

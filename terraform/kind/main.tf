@@ -22,13 +22,13 @@ resource "kind_cluster" "main" {
         role  = "control-plane"
         image = "kindest/node:${var.kubernetes_version}"
 
-        # Mount proxy env file if enabled
+        # Mount macOS host share if provided
         dynamic "extra_mounts" {
-          for_each = var.enable_proxy ? [1] : []
+          for_each = var.host_share_dir != "" ? [1] : []
           content {
-            host_path      = "${path.module}/proxy/http-proxy.conf"
-            container_path = "/etc/systemd/system/containerd.service.d/http-proxy.conf"
-            read_only      = true
+            host_path      = var.host_share_dir
+            container_path = var.host_share_mount_path
+            read_only      = false
           }
         }
       }
@@ -51,13 +51,13 @@ resource "kind_cluster" "main" {
           }
         }
 
-        # Mount proxy env file if enabled
+        # Mount macOS host share if provided
         dynamic "extra_mounts" {
-          for_each = var.enable_proxy ? [1] : []
+          for_each = var.host_share_dir != "" ? [1] : []
           content {
-            host_path      = "${path.module}/proxy/http-proxy.conf"
-            container_path = "/etc/systemd/system/containerd.service.d/http-proxy.conf"
-            read_only      = true
+            host_path      = var.host_share_dir
+            container_path = var.host_share_mount_path
+            read_only      = false
           }
         }
       }

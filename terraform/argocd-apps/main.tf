@@ -40,7 +40,7 @@ locals {
   }
 }
 
-# Deploy AppProjects
+# Deploy AppProjects first (they need to exist before applications)
 resource "kubectl_manifest" "middleware_project" {
   yaml_body = file("../../manifests/projects/middleware.yaml")
 
@@ -84,6 +84,7 @@ resource "time_sleep" "wait_for_applications" {
   create_duration = "30s"
 
   depends_on = [
+    kubectl_manifest.ingress_nginx_application,
     kubectl_manifest.jupyterhub_application
   ]
 }

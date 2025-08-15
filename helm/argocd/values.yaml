@@ -159,6 +159,12 @@ configs:
     # Increase repository server timeout
     controller.repo.server.timeout.seconds: 300
     reposerver.parallelism.limit: 0
+    # Enable proper finalizer handling (keeps finalizers but improves cleanup)
+    application.finalizers: resources-finalizer.argocd.argoproj.io
+    # Improve controller shutdown behavior
+    controller.sharding.replicas: 1
+    # Enable cascading deletion
+    controller.operation.processors: 20
   
   # Repository credentials
   repositories: {}
