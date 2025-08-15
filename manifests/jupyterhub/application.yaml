@@ -13,7 +13,7 @@ spec:
   sources:
     # JupyterHub Helm Chart
     - repoURL: https://hub.jupyter.org/helm-chart/
-      targetRevision: 3.3.7
+      targetRevision: 4.2.0
       chart: jupyterhub
       helm:
         releaseName: jupyterhub

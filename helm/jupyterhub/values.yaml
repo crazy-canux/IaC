@@ -82,7 +82,6 @@ singleuser:
   # Default image
   image:
     name: quay.io/jupyterhub/k8s-singleuser-sample
-    tag: "3.2.1"
     pullPolicy: IfNotPresent
   
   # Start timeout
@@ -105,6 +104,15 @@ singleuser:
       pvcNameTemplate: "jhub-claim-{username}"
     capacity: "2Gi"
     homeMountPath: /home/jovyan
+    extraVolumes:
+      - name: host-share
+        hostPath:
+          path: /mnt/host/jupyterhub
+          type: DirectoryOrCreate
+    extraVolumeMounts:
+      - name: host-share
+        mountPath: /home/jovyan/share
+        readOnly: false
   
   # Default URL for users
   defaultUrl: "/lab"
@@ -119,17 +127,6 @@ singleuser:
   # Additional environment variables
   extraEnv:
     EDITOR: "nano"
-  
-  # Extra volumes to mount host share from kind nodes into pods
-  extraVolumes:
-    - name: host-share
-      hostPath:
-        path: /mnt/host/jupyterhub
-        type: DirectoryOrCreate
-  extraVolumeMounts:
-    - name: host-share
-      mountPath: /home/jovyan/host-share
-      readOnly: false
   
   # Lifecycle hooks
   lifecycleHooks:
