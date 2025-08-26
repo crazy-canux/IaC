@@ -1,0 +1,56 @@
+# Milvus Helm values for Kind/ArgoCD
+# 参考官方 https://github.com/milvus-io/milvus-helm
+
+# 基础配置
+cluster:
+  enabled: false
+
+image:
+  tag: "v2.4.4"
+
+# 资源限制
+resources:
+  limits:
+    cpu: 1
+    memory: 2Gi
+  requests:
+    cpu: 0.2
+    memory: 512Mi
+
+# 持久化存储
+persistence:
+  enabled: false
+
+# 服务类型
+service:
+  type: ClusterIP
+
+# 关闭监控和外部依赖
+metrics:
+  enabled: false
+minio:
+  enabled: false
+etcd:
+  enabled: true
+pulsar:
+  enabled: false
+kafka:
+  enabled: false
+standalone:
+  enabled: true
+
+# 关闭外部认证
+externalAccess:
+  enabled: false
+
+# Ingress配置
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hosts:
+    - milvus.local
+  pathType: Prefix
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"

@@ -17,9 +17,9 @@ spec:
   
   # Allowed destinations
   destinations:
-  - namespace: 'jupyter'
-    server: https://kubernetes.default.svc
   - namespace: 'jupyterhub'
+    server: https://kubernetes.default.svc
+  - namespace: 'milvus'
     server: https://kubernetes.default.svc
   
   # Cluster resource whitelist
