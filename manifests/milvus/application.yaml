@@ -7,17 +7,14 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: services
-  sources:
-    - repoURL: https://github.com/milvus-io/milvus-helm.git
-      targetRevision: main
-      path: charts/milvus
-      helm:
-        releaseName: milvus
-        valueFiles:
-          - $values/helm/milvus/values.yaml
-    - repoURL: https://github.com/crazy-canux/IaC.git
-      targetRevision: main
-      ref: values
+  source:
+    repoURL: https://github.com/crazy-canux/IaC.git
+    path: helm/vendor/milvus
+    targetRevision: main
+    helm:
+      releaseName: milvus
+      valueFiles:
+        - $values/helm/milvus/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: milvus
