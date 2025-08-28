@@ -1,0 +1,10 @@
+image:
+  all:
+    repository: milvusdb/milvus
+    tag: v2.6.0
+    pullPolicy: IfNotPresent
+
+cluster:
+  enabled: true
+
+# Other default values omitted for brevity; full chart defaults are upstream
