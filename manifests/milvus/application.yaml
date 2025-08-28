@@ -8,9 +8,9 @@ metadata:
 spec:
   project: services
   sources:
-    - repoURL: https://github.com/milvus-io/milvus-helm.git
-      targetRevision: main
-      path: charts/milvus
+    - repoURL: https://zilliztech.github.io/milvus-helm/git
+      targetRevision: 5.0.0
+      chart: milvus
       helm:
         releaseName: milvus
         valueFiles:
