@@ -30,6 +30,8 @@ metrics:
   enabled: false
 minio:
   enabled: false
+  tls:
+    enabled: false
 etcd:
   enabled: true
 pulsar:
