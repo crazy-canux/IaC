@@ -79,12 +79,23 @@ resource "kubectl_manifest" "jupyterhub_application" {
   ]
 }
 
+# Deploy Milvus Application
+resource "kubectl_manifest" "milvus_application" {
+  yaml_body = file("../../manifests/milvus/application.yaml")
+
+  depends_on = [
+    kubectl_manifest.services_project,
+    data.terraform_remote_state.argocd
+  ]
+}
+
 # Wait for ArgoCD applications to be ready
 resource "time_sleep" "wait_for_applications" {
   create_duration = "30s"
 
   depends_on = [
     kubectl_manifest.ingress_nginx_application,
-    kubectl_manifest.jupyterhub_application
+    kubectl_manifest.jupyterhub_application,
+    kubectl_manifest.milvus_application
   ]
 }
