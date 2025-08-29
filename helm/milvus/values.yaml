@@ -51,8 +51,9 @@ minio:
   persistence:
     enabled: true
     size: 5Gi
-    storageClass: ""
-    accessMode: ReadWriteOnce
+    storageClass: "standard"
+    accessModes:
+      - ReadWriteOnce
 
 # --- Etcd ---
 etcd:
@@ -65,7 +66,9 @@ etcd:
   persistence:
     enabled: true
     size: 1Gi
-    storageClass: ""
+    storageClass: "standard"
+    accessModes:
+      - ReadWriteOnce
 
 # --- Standalone Milvus ---
 standalone:
@@ -75,8 +78,9 @@ standalone:
     enabled: true
     persistentVolumeClaim:
       size: 2Gi
-      storageClass: ""
-      accessModes: ReadWriteOnce
+      storageClass: "standard"
+      accessModes:
+        - ReadWriteOnce
   resources:
     requests:
       cpu: "250m"
@@ -124,102 +128,22 @@ auth:
 etcdExtraEnv: |
   # keep default small timeouts for single-node
   ETCD_QUOTA_BACKEND_BYTES=4294967296
-  # No streaming components; keep this small string for extra etcd env
-  # If you later enable Pulsar/Kafka, add their configuration under top-level
-  # `pulsarv3:` or `streaming:` keys. Do not place full Pulsar blocks under
-  # `etcdExtraEnv` — it is a string value used for environment variables.
-    replicaCount: 2
-    autoscaling:
-      enabled: false
-    podMonitor:
-      enabled: false
-    resources:
-      requests:
-        memory: 2048Mi
-        cpu: 0.5
-    configData:
-      PULSAR_MEM: >
-        -Xms4096m -Xmx4096m -XX:MaxDirectMemorySize=8192m
-      PULSAR_GC: >
-        -XX:+UseG1GC
-        -XX:MaxGCPauseMillis=10
-        -Dio.netty.leakDetectionLevel=disabled
-        -Dio.netty.recycler.linkCapacity=1024
-        -XX:+ParallelRefProcEnabled
-        -XX:+UnlockExperimentalVMOptions
-        -XX:+DoEscapeAnalysis
-        -XX:ParallelGCThreads=4
-        -XX:ConcGCThreads=4
-        -XX:G1NewSizePercent=50
-        -XX:+DisableExplicitGC
-        -XX:-ResizePLAB
-        -XX:+ExitOnOutOfMemoryError
-        -XX:+PerfDisableSharedMem
-      managedLedgerDefaultEnsembleSize: "2"
-      managedLedgerDefaultWriteQuorum: "2"
-      managedLedgerDefaultAckQuorum: "2"
-      maxMessageSize: "104857600"
-      defaultRetentionTimeInMinutes: "10080"
-      defaultRetentionSizeInMB: "-1"
-      backlogQuotaDefaultLimitGB: "8"
-      ttlDurationDefaultInSeconds: "259200"
-      subscriptionExpirationTimeMinutes: "3"
-      backlogQuotaDefaultRetentionPolicy: producer_request_hold
+  # Example: ETCD_MAX_IDLE_CONNS=100
 
-  proxy:
-    pdb:
-      usePolicy: false
-    affinity:
-      anti_affinity: false
-    component: proxy
-    replicaCount: 2
-    autoscaling:
-      enabled: false
-    podMonitor:
-      enabled: false
-    resources:
-      requests:
-        memory: 1024Mi
-        cpu: 0.5
-    configData:
-      PULSAR_MEM: >
-        -Xms512m -Xmx512m -XX:MaxDirectMemorySize=2048m
-      PULSAR_GC: >
-        -XX:+UseG1GC
-        -XX:MaxGCPauseMillis=10
-        -Dio.netty.leakDetectionLevel=disabled
-        -Dio.netty.recycler.linkCapacity=1024
-        -XX:+ParallelRefProcEnabled
-        -XX:+UnlockExperimentalVMOptions
-        -XX:+DoEscapeAnalysis
-        -XX:ParallelGCThreads=4
-        -XX:ConcGCThreads=4
-        -XX:G1NewSizePercent=50
-        -XX:+DisableExplicitGC
-        -XX:-ResizePLAB
-        -XX:+ExitOnOutOfMemoryError
-        -XX:+PerfDisableSharedMem
-      httpNumThreads: "8"
-    ports:
-      http: 80
-      https: 443
-      pulsar: 6650
-      pulsarssl: 6651
-      containerPorts:
-        http: 8080
-        https: 8443
-    service:
-      annotations: {}
-      type: ClusterIP
+# Note: previously this file accidentally contained a large Pulsar/
+# proxy configuration nested under `etcdExtraEnv` (string scalar). That
+# block has been removed because it breaks chart semantics and caused
+# operational problems. Keep Pulsar/proxy settings under their own
+# top-level keys (see the `pulsar`/`pulsarv3` sections).
 
-  kube-prometheus-stack:
-    crds:
-      enabled: false
+kube-prometheus-stack:
+  crds:
     enabled: false
-    prometheus:
-      enabled: false
-    grafana:
-      enabled: false
+  enabled: false
+  prometheus:
+    enabled: false
+  grafana:
+    enabled: false
 
 # default values for pulsar v2
 pulsar:
