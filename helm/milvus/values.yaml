@@ -1,10 +1,12 @@
+---
 # Dev-friendly single-node configuration for Kind / local clusters
 # - Standalone Milvus
 # - Local MinIO for object storage (standalone)
 # - Single etcd replica
 # - Pulsar / streaming disabled
 # - HostPath storage for Kind compatibility
-# - Data stored under /mnt/host/kind/milvus/ (mounted from /Users/canux/kind/milvus/)
+# - Data stored under /mnt/host/kind/milvus/
+#   (mounted from /Users/canux/kind/milvus/)
 
 cluster:
   enabled: false
@@ -50,7 +52,8 @@ minio:
   persistence:
     enabled: true
     size: 5Gi
-    storageClass: "standard"  # Will use hostPath provisioner → /mnt/host/kind/milvus/minio/
+    storageClass: "standard"  # Will use hostPath provisioner
+    # → /mnt/host/kind/milvus/minio/
     accessModes:
       - ReadWriteOnce
 
@@ -65,7 +68,8 @@ etcd:
   persistence:
     enabled: true
     size: 1Gi
-    storageClass: "standard"  # Will use hostPath provisioner → /mnt/host/kind/milvus/etcd/
+    storageClass: "standard"  # Will use hostPath provisioner
+    # → /mnt/host/kind/milvus/etcd/
     accessModes:
       - ReadWriteOnce
 
@@ -77,7 +81,8 @@ standalone:
     enabled: true
     persistentVolumeClaim:
       size: 5Gi
-      storageClass: "standard"  # Will use hostPath provisioner → /mnt/host/kind/milvus/data/
+      storageClass: "standard"  # Will use hostPath provisioner
+      # → /mnt/host/kind/milvus/data/
       accessModes:
         - ReadWriteOnce
   resources:
@@ -152,7 +157,8 @@ pulsar:
   fullnameOverride: ""
   persistence: true
 
-  maxMessageSize: "5242880"  # 5 * 1024 * 1024 Bytes, Maximum size of each message in pulsar.
+  maxMessageSize: "5242880"  # 5 * 1024 * 1024 Bytes, Maximum size of each
+  # message in pulsar.
 
   rbac:
     enabled: false
@@ -162,7 +168,7 @@ pulsar:
   affinity:
     anti_affinity: false
 
-## enableAntiAffinity: no
+  ## enableAntiAffinity: no
 
   components:
     zookeeper: true
@@ -383,8 +389,9 @@ kafka:
 
   persistence:
     enabled: true
-    storageClass:
-    accessMode: ReadWriteOnce
+    storageClass: "standard"
+    accessModes:
+      - ReadWriteOnce
     size: 300Gi
 
   metrics:
