@@ -97,15 +97,15 @@ variable "extra_mounts" {
 
 # Host folder sharing into kind nodes (for JupyterHub access)
 variable "host_share_dir" {
-  description = "Absolute path on macOS to share into kind nodes (e.g. /Users/<you>/jupyterhub). Leave empty to disable."
+  description = "Absolute path on macOS to share into kind nodes (e.g. /Users/<you>/kind). Leave empty to disable."
   type        = string
-  default     = "/Users/canux/jupyterhub"
+  default     = "/Users/canux/kind"
 }
 
 variable "host_share_mount_path" {
   description = "Path inside kind nodes where the host folder will be mounted."
   type        = string
-  default     = "/mnt/host/jupyterhub"
+  default     = "/mnt/host/kind"
 }
 
 variable "labels" {

@@ -13,9 +13,9 @@ resource "local_file" "master_cloudinit" {
 resource "multipass_instance" "master" {
   count          = var.master_nodes
   name           = "master-${count.index}"
-  cpus           = 2
-  memory         = "4G"
-  disk           = "20G"
+  cpus           = var.master_cpu
+  memory         = var.master_memory
+  disk           = var.master_disk
   cloudinit_file = local_file.master_cloudinit[count.index].filename
 
   provisioner "local-exec" {
@@ -36,9 +36,9 @@ resource "local_file" "worker_cloudinit" {
 resource "multipass_instance" "worker" {
   count          = var.worker_nodes
   name           = "worker-${count.index}"
-  cpus           = 2
-  memory         = "2G"
-  disk           = "20G"
+  cpus           = var.worker_cpu
+  memory         = var.worker_memory
+  disk           = var.worker_disk
   cloudinit_file = local_file.worker_cloudinit[count.index].filename
 
   provisioner "local-exec" {

@@ -111,7 +111,7 @@ singleuser:
     extraVolumes:
       - name: host-share
         hostPath:
-          path: /mnt/host/jupyterhub
+          path: /mnt/host/kind/jupyterhub
           type: DirectoryOrCreate
     extraVolumeMounts:
       - name: host-share

@@ -1,11 +1,10 @@
-nameOverride: ""
-fullnameOverride: ""
-
 # Dev-friendly single-node configuration for Kind / local clusters
 # - Standalone Milvus
 # - Local MinIO for object storage (standalone)
 # - Single etcd replica
 # - Pulsar / streaming disabled
+# - HostPath storage for Kind compatibility
+# - Data stored under /mnt/host/kind/milvus/ (mounted from /Users/canux/kind/milvus/)
 
 cluster:
   enabled: false
@@ -51,7 +50,7 @@ minio:
   persistence:
     enabled: true
     size: 5Gi
-    storageClass: "standard"
+    storageClass: "standard"  # Will use hostPath provisioner → /mnt/host/kind/milvus/minio/
     accessModes:
       - ReadWriteOnce
 
@@ -66,7 +65,7 @@ etcd:
   persistence:
     enabled: true
     size: 1Gi
-    storageClass: "standard"
+    storageClass: "standard"  # Will use hostPath provisioner → /mnt/host/kind/milvus/etcd/
     accessModes:
       - ReadWriteOnce
 
@@ -77,8 +76,8 @@ standalone:
   persistence:
     enabled: true
     persistentVolumeClaim:
-      size: 50Gi
-      storageClass: "standard"
+      size: 5Gi
+      storageClass: "standard"  # Will use hostPath provisioner → /mnt/host/kind/milvus/data/
       accessModes:
         - ReadWriteOnce
   resources:
