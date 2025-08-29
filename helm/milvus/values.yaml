@@ -77,7 +77,7 @@ standalone:
   persistence:
     enabled: true
     persistentVolumeClaim:
-      size: 2Gi
+      size: 50Gi
       storageClass: "standard"
       accessModes:
         - ReadWriteOnce
@@ -529,8 +529,9 @@ tei:
     annotations: {}
     persistentVolumeClaim:
       existingClaim: ""
-      storageClass:
-      accessModes: ReadWriteOnce
+      storageClass: ""
+      accessModes:
+        - ReadWriteOnce
       size: 50Gi
       subPath: ""
   # TEI model configuration
