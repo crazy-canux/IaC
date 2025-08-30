@@ -43,12 +43,12 @@ resource "kubernetes_namespace" "argocd" {
 # Local values for configuration
 locals {
   # Get cluster info directly from Kind module outputs
-  cluster_name        = data.terraform_remote_state.kind.outputs.cluster_name
-  cluster_endpoint    = data.terraform_remote_state.kind.outputs.cluster_endpoint
-  kubeconfig_path     = data.terraform_remote_state.kind.outputs.kubeconfig_file_path
-  pod_subnet          = data.terraform_remote_state.kind.outputs.pod_subnet
-  service_subnet      = data.terraform_remote_state.kind.outputs.service_subnet
-  kubernetes_version  = data.terraform_remote_state.kind.outputs.kubernetes_version
+  cluster_name       = data.terraform_remote_state.kind.outputs.cluster_name
+  cluster_endpoint   = data.terraform_remote_state.kind.outputs.cluster_endpoint
+  kubeconfig_path    = data.terraform_remote_state.kind.outputs.kubeconfig_file_path
+  pod_subnet         = data.terraform_remote_state.kind.outputs.pod_subnet
+  service_subnet     = data.terraform_remote_state.kind.outputs.service_subnet
+  kubernetes_version = data.terraform_remote_state.kind.outputs.kubernetes_version
 
   # Dynamic values based on configuration
   dynamic_values = {

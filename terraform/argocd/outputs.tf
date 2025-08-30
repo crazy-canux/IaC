@@ -101,9 +101,9 @@ output "argocd_admin_password" {
   description = "ArgoCD admin password (auto-generated if not provided)"
   value = var.admin_password != "" ? (
     "*** Custom password provided ***"
-  ) : (
-    length(data.kubernetes_secret.argocd_admin_password) > 0 && 
-    can(data.kubernetes_secret.argocd_admin_password[0].data["password"]) ? 
+    ) : (
+    length(data.kubernetes_secret.argocd_admin_password) > 0 &&
+    can(data.kubernetes_secret.argocd_admin_password[0].data["password"]) ?
     try(base64decode(data.kubernetes_secret.argocd_admin_password[0].data["password"]), "Password decode failed") :
     "Password not yet available - ArgoCD may still be initializing"
   )

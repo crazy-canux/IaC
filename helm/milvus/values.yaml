@@ -52,19 +52,9 @@ minio:
   persistence:
     enabled: true
     size: 5Gi
-    storageClass: "standard"  # Will use hostPath provisioner
-    # → /mnt/host/kind/milvus/minio/
+    storageClass: "standard"
     accessModes:
-      - ReadWriteOnce
-  extraVolumes:
-    - name: minio-data
-      hostPath:
-        path: /mnt/host/kind/milvus/minio
-        type: DirectoryOrCreate
-  extraVolumeMounts:
-    - name: minio-data
-      mountPath: /data
-      readOnly: false
+      - "ReadWriteOnce"
 
 # --- Etcd ---
 etcd:
@@ -77,19 +67,9 @@ etcd:
   persistence:
     enabled: true
     size: 1Gi
-    storageClass: "standard"  # Will use hostPath provisioner
-    # → /mnt/host/kind/milvus/etcd/
+    storageClass: "standard"
     accessModes:
-      - ReadWriteOnce
-  extraVolumes:
-    - name: etcd-data
-      hostPath:
-        path: /mnt/host/kind/milvus/etcd
-        type: DirectoryOrCreate
-  extraVolumeMounts:
-    - name: etcd-data
-      mountPath: /etcd-data
-      readOnly: false
+      - "ReadWriteOnce"
 
 # --- Standalone Milvus ---
 standalone:
@@ -99,19 +79,9 @@ standalone:
     enabled: true
     persistentVolumeClaim:
       size: 5Gi
-      storageClass: "standard"  # Will use hostPath provisioner
-      # → /mnt/host/kind/milvus/data/
+      storageClass: "standard"
       accessModes:
-        - ReadWriteOnce
-  extraVolumes:
-    - name: milvus-data
-      hostPath:
-        path: /mnt/host/kind/milvus/data
-        type: DirectoryOrCreate
-  extraVolumeMounts:
-    - name: milvus-data
-      mountPath: /var/lib/milvus
-      readOnly: false
+        - "ReadWriteOnce"
   resources:
     requests:
       cpu: "250m"
@@ -418,7 +388,7 @@ kafka:
     enabled: true
     storageClass: "standard"
     accessModes:
-      - ReadWriteOnce
+      - "ReadWriteOnce"
     size: 300Gi
 
   metrics:
@@ -562,9 +532,9 @@ tei:
     annotations: {}
     persistentVolumeClaim:
       existingClaim: ""
-      storageClass: ""
+      storageClass: "standard"
       accessModes:
-        - ReadWriteOnce
+        - "ReadWriteOnce"
       size: 50Gi
       subPath: ""
   # TEI model configuration
