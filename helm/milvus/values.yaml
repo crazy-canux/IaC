@@ -56,6 +56,15 @@ minio:
     # → /mnt/host/kind/milvus/minio/
     accessModes:
       - ReadWriteOnce
+  extraVolumes:
+    - name: minio-data
+      hostPath:
+        path: /mnt/host/kind/milvus/minio
+        type: DirectoryOrCreate
+  extraVolumeMounts:
+    - name: minio-data
+      mountPath: /data
+      readOnly: false
 
 # --- Etcd ---
 etcd:
@@ -72,6 +81,15 @@ etcd:
     # → /mnt/host/kind/milvus/etcd/
     accessModes:
       - ReadWriteOnce
+  extraVolumes:
+    - name: etcd-data
+      hostPath:
+        path: /mnt/host/kind/milvus/etcd
+        type: DirectoryOrCreate
+  extraVolumeMounts:
+    - name: etcd-data
+      mountPath: /etcd-data
+      readOnly: false
 
 # --- Standalone Milvus ---
 standalone:
@@ -85,6 +103,15 @@ standalone:
       # → /mnt/host/kind/milvus/data/
       accessModes:
         - ReadWriteOnce
+  extraVolumes:
+    - name: milvus-data
+      hostPath:
+        path: /mnt/host/kind/milvus/data
+        type: DirectoryOrCreate
+  extraVolumeMounts:
+    - name: milvus-data
+      mountPath: /var/lib/milvus
+      readOnly: false
   resources:
     requests:
       cpu: "250m"
