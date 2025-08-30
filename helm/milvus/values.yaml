@@ -48,7 +48,7 @@ volumeMounts: []
 
 service:
   type: ClusterIP
-  port: 19530
+  port: 9091
   portName: milvus
   nodePort: ""
   annotations: {}
