@@ -1,18 +1,18 @@
-# Milvus WebUI Ingress
-# Simple ingress for Milvus WebUI on port 9091
+# Milvus Ingress Configuration
+# Handles both gRPC (port 19530) and WebUI (port 9091) traffic
 
-resource "kubectl_manifest" "milvus_webui_ingress" {
+resource "kubectl_manifest" "milvus_ingress" {
   yaml_body = yamlencode({
     apiVersion = "networking.k8s.io/v1"
     kind       = "Ingress"
 
     metadata = {
-      name      = "milvus-webui"
+      name      = "milvus"
       namespace = "milvus"
       annotations = {
-        "nginx.ingress.kubernetes.io/backend-protocol"     = "HTTP"
         "nginx.ingress.kubernetes.io/ssl-redirect"         = "false"
         "nginx.ingress.kubernetes.io/force-ssl-redirect"   = "false"
+        "nginx.ingress.kubernetes.io/use-regex"            = "true"
       }
     }
 
@@ -21,18 +21,34 @@ resource "kubectl_manifest" "milvus_webui_ingress" {
       rules = [{
         host = "milvus.local"
         http = {
-          paths = [{
-            path     = "/"
-            pathType = "Prefix"
-            backend = {
-              service = {
-                name = "milvus"
-                port = {
-                  number = 9091
+          paths = [
+            # WebUI path - HTTP backend
+            {
+              path     = "/webui(/|$)(.*)"
+              pathType = "Prefix"
+              backend = {
+                service = {
+                  name = "milvus"
+                  port = {
+                    number = 9091
+                  }
+                }
+              }
+            },
+            # Default path - gRPC backend
+            {
+              path     = "/"
+              pathType = "Prefix"
+              backend = {
+                service = {
+                  name = "milvus"
+                  port = {
+                    number = 19530
+                  }
                 }
               }
             }
-          }]
+          ]
         }
       }]
     }

@@ -58,18 +58,7 @@ service:
   - 0.0.0.0/0
 
 ingress:
-  enabled: true
-  ingressClassName: "nginx"
-  annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-  labels: {}
-  rules:
-    - host: "milvus.local"
-      path: "/"
-      pathType: "Prefix"
-  tls: []
+  enabled: false
 
 serviceAccount:
   create: false
