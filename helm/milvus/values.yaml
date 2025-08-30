@@ -8,6 +8,12 @@
 # - Data stored under /mnt/host/kind/milvus/
 #   (mounted from /Users/canux/kind/milvus/)
 
+## Expand the name of the chart
+nameOverride: ""
+
+## Default fully qualified app name
+fullnameOverride: ""
+
 cluster:
   enabled: false
 
@@ -17,15 +23,84 @@ image:
     tag: v2.6.0
     pullPolicy: IfNotPresent
 
+# Global securityContext
+# If set, this will apply to all milvus components
+containerSecurityContext: {}
+securityContext: {}
+  # runAsUser: 1000
+  # runAsGroup: 1000
+  # fsGroup: 1000
+  # runAsNonRoot: true
+
+# Global topologySpreadConstraints
+# If set, this will apply to all milvus components
+topologySpreadConstraints: []
+
+# Global labels and annotations
+# If set, this will apply to all milvus components
+labels: {}
+annotations: {}
+
+# Global Volumes & volumeMounts
+# If set, this will apply to all milvus components
+volumes: []
+volumeMounts: []
+
 service:
   type: ClusterIP
   port: 19530
+  portName: milvus
+  nodePort: ""
+  annotations: {}
+  labels: {}
+  externalIPs: []
+  loadBalancerSourceRanges:
+  - 0.0.0.0/0
 
-streaming:
+ingress:
+  enabled: true
+  ingressClassName: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+  labels: {}
+  rules:
+    - host: "milvus.local"
+      path: "/"
+      pathType: "Prefix"
+  tls: []
+
+serviceAccount:
+  create: false
+  name:
+  annotations:
+  labels:
+
   enabled: false
 
 pulsarv3:
   enabled: false
+
+##
+## If set, the whole config will be mounted from this custom ConfigMap.
+## The ConfigMap should have a key named `milvus.yaml` which contains the full Milvus config.
+## extraConfigFiles will be ignored if this variable is set.
+##
+customConfigMap: ""
+
+# Extra configs for milvus.yaml
+# If set, this config will merge into milvus.yaml
+# Please follow the config structure in the milvus.yaml
+# at https://github.com/milvus-io/milvus/blob/master/configs/milvus.yaml
+extraConfigFiles:
+  user.yaml: |+
+    #    For example enable rest http for milvus proxy
+    #    proxy:
+    #      http:
+    #        enabled: true
+    #      maxUserNum: 100
+    #      maxRoleNum: 10
 
 # --- MinIO (object storage) ---
 minio:
@@ -112,7 +187,12 @@ readinessProbe:
   failureThreshold: 6
 
 metrics:
-  enabled: false
+  enabled: true
+
+  serviceMonitor:
+    enabled: false
+    interval: "30s"
+    scrapeTimeout: "10s"
 
 # Scheduling defaults
 nodeSelector: {}
