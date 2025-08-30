@@ -80,8 +80,7 @@ standalone:
     persistentVolumeClaim:
       size: 5Gi
       storageClass: "standard"
-      accessModes:
-        - "ReadWriteOnce"
+      accessModes: "ReadWriteOnce"
   resources:
     requests:
       cpu: "250m"
