@@ -51,8 +51,7 @@ service:
   port: 19530
   portName: milvus
   nodePort: ""
-  annotations:
-    nginx.ingress.kubernetes.io/service-upstream: "true"
+  annotations: {}
   labels: {}
   externalIPs: []
   loadBalancerSourceRanges:
@@ -65,7 +64,6 @@ ingress:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/service-port: "9091"
   labels: {}
   rules:
     - host: "milvus.local"
@@ -98,9 +96,9 @@ customConfigMap: ""
 extraConfigFiles:
   user.yaml: |+
     #    For example enable rest http for milvus proxy
-    proxy:
-      http:
-        enabled: true
+    #    proxy:
+    #      http:
+    #        enabled: true
     #      maxUserNum: 100
     #      maxRoleNum: 10
 
