@@ -56,6 +56,7 @@ This project provides a **production-ready DevOps and AI/ML platform** designed 
 ### 🧠 **AI/ML Platform**
 
 - **JupyterHub**: Multi-user notebook environment
+- **Milvus**: Vector database for AI/ML applications and similarity search
 - **GPU Support**: Ready for machine learning workloads
 - **Persistent Storage**: Data persistence across sessions
 - **Scalable Compute**: Dynamic resource allocation
@@ -73,6 +74,7 @@ This project provides a **production-ready DevOps and AI/ML platform** designed 
 | **Bank-Vaults** | Vault-Kubernetes integration | Latest |
 | **External-DNS** | DNS automation | Latest |
 | **JupyterHub** | AI/ML development environment | v3.3+ |
+| **Milvus** | Vector database for AI/ML | v2.6+ |
 | **Prometheus Stack** | Monitoring and observability | Latest |
 
 ## 🚀 Quick Start
@@ -127,6 +129,7 @@ terraform init && terraform apply -auto-approve
 # Add local domain entries
 echo "127.0.0.1 argocd.local" | sudo tee -a /etc/hosts
 echo "127.0.0.1 jupyterhub.local" | sudo tee -a /etc/hosts
+echo "127.0.0.1 milvus.local" | sudo tee -a /etc/hosts
 ```
 
 ### 4. Access Services
@@ -135,6 +138,8 @@ echo "127.0.0.1 jupyterhub.local" | sudo tee -a /etc/hosts
 |---------|-----|-------------|
 | **ArgoCD** | <http://argocd.local:8080> | admin / [get password](#-credentials) |
 | **JupyterHub** | <http://jupyterhub.local:8080> | admin, jupyter, user1, user2 / jupyter |
+| **Milvus** | <http://milvus.local:8080> | N/A |
+| **Milvus WebUI** | <http://milvus.local:8080/webui/> | N/A |
 
 ## 📷 Screenshots
 
@@ -167,6 +172,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.pas
 ### **🤖 AI/ML Research & Development**
 
 - **Rapid AI Tool Deployment**: Quick setup of ML frameworks and tools
+- **Vector Database**: Milvus for efficient similarity search and vector operations
 - **Collaborative Research Environment**: Multi-user Jupyter notebooks with shared resources
 - **Model Training Infrastructure**: GPU-ready compute with persistent storage
 - **AI Pipeline Development**: End-to-end MLOps workflow capabilities
@@ -245,6 +251,7 @@ spec:
 
 ### **🤖 AI/ML Ecosystem (Future)**
 
+- [x] **Milvus**: Vector database for AI/ML applications deployed
 - [ ] **Kubeflow**: Complete MLOps platform for model training and serving
 - [ ] **MLflow**: Model lifecycle management and experiment tracking
 - [ ] **Jupyter Enterprise Gateway**: Scalable notebook execution
